@@ -110,6 +110,38 @@ class StoreController extends Controller
         return response($response, 200);
     }
 
+    public function store_categories_client(Request $request)
+    {
+        try {
+            $store_id = $request->storeId;
+            $store = Store::where('id', $store_id)->get()[0];
+            $store_categories = $store->icatecories;
+            $response = [];
+            foreach ($store_categories as $cate) {
+                $cate_items = $cate->items;
+                $response_item['cate_id'] =  $cate->id;
+                $response_item['cate_name'] = $cate->name;
+                $response_item['cate_description'] = 'this category contains delicious items, and it is made from natural incrediants.';
+                $items = [];
+                foreach ($cate_items as $cate_item) {
+                    $item['item_id'] =  $cate_item->id;
+                    $item['item_name'] = $cate_item->name;
+                    $item['item_description'] = $cate_item->description;
+                    $item['item_price'] = $cate_item->price;
+                    $item_img_path = 'storage/' . str_replace("public/", "", $cate_item->image);
+                    $item_img_link = asset($item_img_path);
+                    $item['item_img'] = $item_img_link;
+                    array_push($items, $item);
+                }
+                $response_item['items'] = $items;
+                array_push($response, $response_item);
+            }
+            return response($response, 200);
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
