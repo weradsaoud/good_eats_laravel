@@ -143,6 +143,30 @@ class StoreController extends Controller
         }
     }
 
+    public function item_options_client(Request $request)
+    {
+        try {
+
+            $item_id = $request->item_id;
+            $item = Item::where('id', $item_id)->get()[0];
+            $options = $item->options;
+            $response = [];
+            foreach ($options as $option) {
+                $response_item['optionId'] = $option->id;
+                $response_item['name'] = $option->name;
+                $options_json = json_decode($option->options, true);
+                $response_item['values'] = [];
+                foreach ($options_json as $value) {
+                    array_push($response_item['values'], $value);
+                }
+                array_push($response, $response_item);
+            }
+            return response($response, 200);
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *

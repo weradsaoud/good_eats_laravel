@@ -86,3 +86,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::get('/client/stores', 'App\Http\Controllers\StoreController@index_client');
 Route::get('/client/storeCategories', 'App\Http\Controllers\StoreController@store_categories_client');
+Route::get('/client/itemOptions', 'App\Http\Controllers\StoreController@item_options_client');
