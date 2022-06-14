@@ -125,6 +125,7 @@ class StoreController extends Controller
                 $items = [];
                 foreach ($cate_items as $cate_item) {
                     $item['item_id'] =  $cate_item->id;
+                    $item['cate_id'] = $cate->id;
                     $item['item_name'] = $cate_item->name;
                     $item['item_description'] = $cate_item->description;
                     $item['item_price'] = $cate_item->price;
