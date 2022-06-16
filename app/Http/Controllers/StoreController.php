@@ -167,6 +167,37 @@ class StoreController extends Controller
         }
     }
 
+    public function item_extras_client(Request $request)
+    {
+    }
+
+    public function variant_extras_client(Request $request)
+    {
+        $item_id = $request->item_id;
+        $variant = $request->variant;
+        $item = Item::where('id', $item_id)->get()[0];
+        $item_variants = $item->variants;
+        $target_variants = $item_variants->filter(function ($item_variant, $key) use ($variant) {
+            return $item_variant->options == $variant;
+        });
+        $target_variant = null;
+        if ($target_variants->length > 0) {
+            $target_variant = $target_variants[0];
+            $extras = $target_variant->extras;
+            $response = [];
+            foreach ($extras as $extra) {
+                $response_item = [];
+                $response_item['extraId'] = $extra->id;
+                $response_item['name'] = $extra->name;
+                $response_item['price'] = $extra->price;
+                array_push($response, $response_item);
+            }
+            return response($response, 200);
+        } else {
+            return response([], 200);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
