@@ -169,6 +169,22 @@ class StoreController extends Controller
 
     public function item_extras_client(Request $request)
     {
+        try {
+            $item_id = $request->item_id;
+            $item = Item::where('id', $item_id)->get()[0];
+            $item_extras = $item->extras;
+            $response = [];
+            foreach ($item_extras as $extra) {
+                $response_item = [];
+                $response_item['extraId'] = $extra->id;
+                $response_item['name'] = $extra->name;
+                $response_item['price'] = $extra->price;
+                array_push($response, $response_item);
+            }
+            return response($response, 200);
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
     }
 
     public function variant_extras_client(Request $request)
@@ -181,8 +197,8 @@ class StoreController extends Controller
             return $item_variant->options == $variant;
         });
         $target_variant = null;
-        if ($target_variants->length > 0) {
-            $target_variant = $target_variants[0];
+        if ($target_variants->count() > 0) {
+            $target_variant = $target_variants->first();
             $extras = $target_variant->extras;
             $response = [];
             foreach ($extras as $extra) {
