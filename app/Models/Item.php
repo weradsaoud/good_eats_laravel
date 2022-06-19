@@ -47,4 +47,9 @@ class Item extends Model
     {
         return $this->belongsToMany(Icategory::class, 'icategory_item', 'item_id', 'icategory_id');
     }
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'item_order', 'item_id', 'order_id')
+        ->withPivot('count');
+    }
 }

@@ -21,4 +21,9 @@ class Variant extends Model
     {
         return $this->belongsToMany(Extra::class, 'extra_variant', 'variant_id', 'extra_id');
     }
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_variant', 'variant_id', 'order_id')
+        ->withPivot('count');
+    }
 }

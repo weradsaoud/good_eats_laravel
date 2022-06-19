@@ -173,14 +173,18 @@ class StoreController extends Controller
             $item_id = $request->item_id;
             $item = Item::where('id', $item_id)->get()[0];
             $item_extras = $item->extras;
-            $response = [];
+            $extras = [];
             foreach ($item_extras as $extra) {
-                $response_item = [];
-                $response_item['extraId'] = $extra->id;
-                $response_item['name'] = $extra->name;
-                $response_item['price'] = $extra->price;
-                array_push($response, $response_item);
+                $extra_item = [];
+                $extra_item['extraId'] = $extra->id;
+                $extra_item['name'] = $extra->name;
+                $extra_item['price'] = $extra->price;
+                array_push($extras, $extra_item);
             }
+            $response = [
+                'extras' => $extras,
+                'item_price' => $item['price']
+            ];
             return response($response, 200);
         } catch (\Throwable $th) {
             return response($th, 500);
@@ -199,15 +203,20 @@ class StoreController extends Controller
         $target_variant = null;
         if ($target_variants->count() > 0) {
             $target_variant = $target_variants->first();
-            $extras = $target_variant->extras;
-            $response = [];
-            foreach ($extras as $extra) {
-                $response_item = [];
-                $response_item['extraId'] = $extra->id;
-                $response_item['name'] = $extra->name;
-                $response_item['price'] = $extra->price;
-                array_push($response, $response_item);
+            $variant_extras = $target_variant->extras;
+            $extras = [];
+            foreach ($variant_extras as $variant_extra) {
+                $extra_item = [];
+                $extra_item['extraId'] = $variant_extra->id;
+                $extra_item['name'] = $variant_extra->name;
+                $extra_item['price'] = $variant_extra->price;
+                array_push($extras, $extra_item);
             }
+            $response = [
+                'extras' => $extras,
+                'variant_price' => $target_variant->price,
+                'variant_id' => $target_variant->id
+            ];
             return response($response, 200);
         } else {
             return response([], 200);
@@ -374,7 +383,7 @@ class StoreController extends Controller
             return response(['store_id' => $store->id], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return response(['notok' => json_encode($th)], 500);
+            return response($th, 500);
         }
     }
 

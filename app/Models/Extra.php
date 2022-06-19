@@ -23,4 +23,9 @@ class Extra extends Model
     {
         return $this->belongsToMany(Variant::class, 'extra_variant', 'extra_id', 'variant_id');
     }
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'extra_order', 'extra_id', 'order_id')
+        ->withPivot('count');
+    }
 }

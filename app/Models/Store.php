@@ -91,4 +91,8 @@ class Store extends Model
     {
         return $this->belongsToMany(User::class, 'store_user', 'store_id', 'user_id');
     }
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'store_id');
+    }
 }
