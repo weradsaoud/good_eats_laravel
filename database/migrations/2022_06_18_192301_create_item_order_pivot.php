@@ -18,7 +18,7 @@ class CreateItemOrderPivot extends Migration
             $table->foreign('order_id')->on('orders')->references('id')->cascadeOnDelete();
             $table->foreignId('item_id')->index();
             $table->foreign('item_id')->on('items')->references('id')->cascadeOnDelete();
-            $table->primary(['order_id', 'item_id']);
+            $table->primary(['item_id', 'order_id']);
             $table->integer('count');
         });
     }
