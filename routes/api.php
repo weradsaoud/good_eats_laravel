@@ -89,3 +89,4 @@ Route::get('/client/storeCategories', 'App\Http\Controllers\StoreController@stor
 Route::get('/client/itemOptions', 'App\Http\Controllers\StoreController@item_options_client');
 Route::get('/client/itemExtras','App\Http\Controllers\StoreController@item_extras_client');
 Route::get('/client/variantExtras', 'App\Http\Controllers\StoreController@variant_extras_client');
+Route::post('/client/order', 'App\Http\Controllers\OrderController@store');

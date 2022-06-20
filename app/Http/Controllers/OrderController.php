@@ -36,7 +36,7 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        return response([], 200);
     }
 
     /**
