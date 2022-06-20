@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Store;
 
 class OrderController extends Controller
 {
@@ -36,7 +37,47 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        return response([], 200);
+        try {
+            // $client_phone_number = $request->phoneNumber;
+            // $store_id = $request->store_id;
+            // $$item_id = $request->item_id;
+            // $variant_id = $request->variant_id;
+            // $extras_ids = $request->extras_ids;
+            // $count = $request->count;
+            // $orderItem_price = $request->orderItem_price;
+            $order_items = $request->order;
+            $store_id = 0;
+            $client_phone_number = '';
+            if (count($order_items) > 0) {
+                $store_id = $order_items[0]['store_id'];
+                $client_phone_number = $order_items[0]['phoneNumber'];
+            }
+            $order = new Order([
+                'client_phone' => $client_phone_number,
+                'price' => 0,
+                'status' => 'new'
+            ]);
+            // $order->save();
+            // 
+            $store = Store::where('id', $store_id)->get()[0];
+            $store->orders()->save($order);
+            $saved_order = Order::where('id', $order->id)->get()[0];
+            $total_price = 0;
+            foreach ($order_items as $order_item) {
+                if ($order_item['variant_id'] == '') {
+                    $saved_order->items()->attach($order_item['item_id'], ['count' => $order_item['count']]);
+                } else {
+                    $saved_order->items()->attach($order_item['item_id'], ['count' => 0]);
+                    $saved_order->variants()->attach($order_item['variant_id'], ['count' => $order_item['count']]);
+                }
+                $saved_order->extras()->attach($order_item['extras_ids']);
+                $total_price = $total_price + doubleval($order_item['orderItem_price']);
+                $saved_order->update(['price' => $total_price]);
+            }
+            return response(['tok'], 200);
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
     }
 
     /**
