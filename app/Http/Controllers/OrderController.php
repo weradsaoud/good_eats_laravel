@@ -6,9 +6,48 @@ use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Store;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+
+
+    public function getLastOrderId()
+    {
+        try {
+            $max_order_id = Order::max('id');
+            return response($max_order_id, 200);
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
+    }
+
+    public function getNewOrders(Request $request)
+    {
+        $last_order_Id = $request->lastOrderId;
+        $new_orders = Order::where('id', '>', $last_order_Id)->get();
+        if (count($new_orders) > 0) {
+            $response = [];
+            foreach ($new_orders as $new_order) {
+                $response_el = [];
+                $client_phone = $new_order->client_phone;
+                $orderPrice = $new_order->price;
+                $items = $new_order->items;
+                $response_el = [
+                    'id' => $new_order->id,
+                    'client_phone' => $client_phone,
+                    'orderPrice' => $orderPrice,
+                    'items' => $items
+                ];
+                array_push($response, $response_el);
+            }
+            return response($response, 200);
+        } else {
+            return response('no_new_orders', 200);
+        }
+    }
+
+
     /**
      * Display a listing of the resource.
      *

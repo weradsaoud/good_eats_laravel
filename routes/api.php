@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/updateStore', 'App\Http\Controllers\StoreController@update');
     Route::get('/itemsCategories', 'App\Http\Controllers\IcategoryController@index');
     Route::post('/saveItemsCategories', 'App\Http\Controllers\IcategoryController@store');
+    
 });
 
 Route::get('/client/stores', 'App\Http\Controllers\StoreController@index_client');
@@ -90,3 +91,6 @@ Route::get('/client/itemOptions', 'App\Http\Controllers\StoreController@item_opt
 Route::get('/client/itemExtras','App\Http\Controllers\StoreController@item_extras_client');
 Route::get('/client/variantExtras', 'App\Http\Controllers\StoreController@variant_extras_client');
 Route::post('/client/order', 'App\Http\Controllers\OrderController@store');
+
+Route::get('/getLastOrderId', 'App\Http\Controllers\OrderController@getLastOrderId');
+Route::get('/getNewOrders', 'App\Http\Controllers\OrderController@getNewOrders');
