@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\OrderEvent;
+use App\Events\NewOrder;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
@@ -114,7 +114,7 @@ class OrderController extends Controller
                 $total_price = $total_price + doubleval($order_item['orderItem_price']);
                 $saved_order->update(['price' => $total_price]);
             }
-            //event(new OrderEvent($saved_order));
+            event(new NewOrder($saved_order));
             return response(['tok'], 200);
         } catch (\Throwable $th) {
             return response($th, 500);
