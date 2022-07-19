@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Store;
+use App\Models\User;
+use App\Notifications\NewOrder as NotificationsNewOrder;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -114,7 +116,10 @@ class OrderController extends Controller
                 $total_price = $total_price + doubleval($order_item['orderItem_price']);
                 $saved_order->update(['price' => $total_price]);
             }
-            event(new NewOrder($saved_order));
+            //event(new NewOrder($saved_order));
+            //auth('web')->user()->notify(new NotificationsNewOrder($saved_order));
+            $user = User::where('email', 'werad.saoud@gmail.com')->get()[0];
+            $user->notify(new NotificationsNewOrder($saved_order));
             return response(['tok'], 200);
         } catch (\Throwable $th) {
             return response($th, 500);
