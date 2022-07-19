@@ -27,27 +27,31 @@ class OrderController extends Controller
 
     public function getNewOrders(Request $request)
     {
-        $last_order_Id = $request->lastOrderId;
-        $new_orders = Order::where('id', '>', $last_order_Id)->get();
-        if (count($new_orders) > 0) {
-            $response = [];
-            foreach ($new_orders as $new_order) {
-                $response_el = [];
-                $client_phone = $new_order->client_phone;
-                $orderPrice = $new_order->price;
-                $items = $new_order->items;
-                $response_el = [
-                    'id' => $new_order->id,
-                    'client_phone' => $client_phone,
-                    'orderPrice' => $orderPrice,
-                    'items' => $items
-                ];
-                array_push($response, $response_el);
-            }
-            return response($response, 200);
-        } else {
-            return response('no_new_orders', 200);
-        }
+        // $last_order_Id = $request->lastOrderId;
+        // $new_orders = Order::where('id', '>', $last_order_Id)->get();
+        // if (count($new_orders) > 0) {
+        //     $response = [];
+        //     foreach ($new_orders as $new_order) {
+        //         $response_el = [];
+        //         $client_phone = $new_order->client_phone;
+        //         $orderPrice = $new_order->price;
+        //         $items = $new_order->items;
+        //         $response_el = [
+        //             'id' => $new_order->id,
+        //             'client_phone' => $client_phone,
+        //             'orderPrice' => $orderPrice,
+        //             'items' => $items
+        //         ];
+        //         array_push($response, $response_el);
+        //     }
+        //     return response($response, 200);
+        // } else {
+        //     return response('no_new_orders', 200);
+        // }
+
+        $user = User::where('email', 'werad.saoud@gmail.com')->get()[0];
+        $unreadNotifications = $user->unreadNotifications;
+        return response($unreadNotifications, 200);
     }
 
 
@@ -58,7 +62,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $user = User::where('email', 'werad.saoud@gmail.com')->get()[0];
+        $unreadNotifications = $user->unreadNotifications;
+        return response($unreadNotifications, 200);
     }
 
     /**
@@ -116,7 +122,7 @@ class OrderController extends Controller
                 $total_price = $total_price + doubleval($order_item['orderItem_price']);
                 $saved_order->update(['price' => $total_price]);
             }
-            //event(new NewOrder($saved_order));
+            event(new NewOrder($saved_order));
             //auth('web')->user()->notify(new NotificationsNewOrder($saved_order));
             $user = User::where('email', 'werad.saoud@gmail.com')->get()[0];
             $user->notify(new NotificationsNewOrder($saved_order));
