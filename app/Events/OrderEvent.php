@@ -26,7 +26,7 @@ class OrderEvent implements ShouldBroadcast
      */
     public function __construct(Order $order)
     {
-        
+        $this->order = $order;
     }
 
     /**
@@ -36,6 +36,15 @@ class OrderEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('order');
+    }
+    public function broadcastWith(){
+        return [
+            'client_phone' => $this->order->client_phone,
+            'created_at' => $this->order->created_at->toFormattedDateString(),
+            'items' => $this->order->items,
+            'variants' => $this->order->variants,
+            'extras' => $this->order->extras
+        ];
     }
 }
