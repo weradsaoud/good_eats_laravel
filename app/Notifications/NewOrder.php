@@ -50,6 +50,7 @@ class NewOrder extends Notification implements ShouldQueue
 
     public function toDatabase($notifiable)
     {
+        $order_id = $this->order->id;
         $order_items = $this->order->items->all();
 
         $items_ = array_map(function ($item) {
@@ -115,6 +116,7 @@ class NewOrder extends Notification implements ShouldQueue
         }
 
         return [
+            'order_id' => $order_id,
             'client_phone' => $this->order->client_phone,
             'created_at' => $this->order->created_at->toFormattedDateString(),
             'store' => [
