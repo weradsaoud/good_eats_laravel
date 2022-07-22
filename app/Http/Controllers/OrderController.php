@@ -77,6 +77,22 @@ class OrderController extends Controller
         //
     }
 
+    public function changeOrderStatus(Request $request)
+    {
+        $order_id = $request->orderId;
+        $notification_id = $request->notificationId;
+        $order = Order::where('id', $order_id)->get()[0];
+        $user = User::where('email', 'werad.saoud@gmail.com')->get()[0];
+        foreach ($user->unreadNotifications as $notification) {
+            if($notification->id == $notification_id){
+                $notification->markAsRead();
+            }
+        }
+        //$order->update(['status'=>'ready']);
+        //$unreadNotifications = $user->unreadNotifications;
+        return response([], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

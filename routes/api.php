@@ -95,3 +95,4 @@ Route::post('/client/order', 'App\Http\Controllers\OrderController@store');
 Route::get('/getLastOrderId', 'App\Http\Controllers\OrderController@getLastOrderId');
 Route::get('/getNewOrders', 'App\Http\Controllers\OrderController@getNewOrders');
 Route::get('/getOrders', 'App\Http\Controllers\OrderController@index');
+Route::post('/orderReady', 'App\Http\Controllers\OrderController@changeOrderStatus');
